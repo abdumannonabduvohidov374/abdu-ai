@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abdu AI</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+</head>
+<body>
+    <!-- СТРАНИЦА АВТОРИЗАЦИИ -->
+    <div class="auth-page" id="auth-page">
+        <div class="auth-card">
+            <div class="auth-logo"><i class="fa-solid fa-sparkles"></i></div>
+            <h2>Abdu AI</h2>
+            <p>Войдите для сохранения истории чатов</p>
+            <button class="google-btn" id="google-login-btn">
+                <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" alt="G"> Войти через Google
+            </button>
+            <button class="guest-btn" id="guest-login-btn">Пропустить (Гостевой режим)</button>
+        </div>
+    </div>
+
+    <!-- ОСНОВНОЙ ИНТЕРФЕЙС -->
+    <div class="app-wrapper" id="main-app" style="display: none;">
+        
+        <!-- Затемнение экрана для мобильных устройств -->
+        <div class="mobile-overlay" id="mobile-overlay"></div>
+
+        <!-- ЛЕВОЕ МЕНЮ -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <button class="icon-btn" id="menu-toggle" title="Главное меню"><i class="fa-solid fa-bars"></i></button>
+            </div>
+            
+            <div class="sidebar-menu-top">
+                <button class="menu-item primary" id="new-chat-btn" title="Новый чат">
+                    <i class="fa-solid fa-plus"></i> <span class="menu-text">Новый чат</span>
+                </button>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="section-title"><span class="menu-text">Недавние</span></div>
+                <div class="search-container" id="search-box">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" id="chat-search" class="chat-search-input" placeholder="Поиск чатов...">
+                </div>
+                <div class="chat-history" id="chat-history"></div>
+            </div>
+
+            <div class="sidebar-section bottom-section">
+                <button class="menu-item" id="open-settings" title="Настройки">
+                    <i class="fa-solid fa-gear"></i> <span class="menu-text">Настройки и справка</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- ПРАВАЯ ЧАСТЬ -->
+        <main class="main-chat">
+            <header class="top-bar">
+                <div class="top-bar-title">Abdu AI</div>
+                <div class="top-bar-actions">
+                    <div class="user-profile-container">
+                        <img src="https://ui-avatars.com/api/?name=G&background=333&color=fff" alt="User" id="user-avatar" class="avatar-small">
+                        
+                        <div class="dropdown-menu profile-dropdown-google" id="profile-dropdown">
+                            <div class="profile-google-header">
+                                <span id="dropdown-email">guest@abdu.ai</span>
+                                <button class="icon-btn close-profile" id="close-profile-btn"><i class="fa-solid fa-xmark"></i></button>
+                            </div>
+                            <div class="profile-google-main">
+                                <img src="" alt="User" id="dropdown-avatar" class="avatar-xl">
+                                <h3 id="dropdown-greeting">Здравствуйте, Гость!</h3>
+                                <button class="google-manage-btn">Управление аккаунтом Google</button>
+                            </div>
+                            <div class="profile-google-accounts">
+                                <div class="accounts-header">Скрыть аккаунты <i class="fa-solid fa-chevron-up"></i></div>
+                                <button class="account-item"><i class="fa-solid fa-plus"></i> Добавить аккаунт</button>
+                                <button class="account-item" id="logout-all-btn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Выйти из всех аккаунтов</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="chat-container" id="chat-container">
+                <div class="welcome-screen" id="welcome-screen">
+                    <h1 class="shimmer-text">Здравствуйте!</h1>
+                    <h2 class="shimmer-text-secondary">Что делаем дальше?</h2>
+                    <div class="suggestion-chips">
+                        <button class="chip"><i class="fa-solid fa-lightbulb"></i> Для вас</button>
+                        <button class="chip"><i class="fa-solid fa-image"></i> Создать изображение</button>
+                        <button class="chip"><i class="fa-solid fa-code"></i> Написать код</button>
+                    </div>
+                </div>
+                <div class="messages-wrapper" id="messages-wrapper"></div>
+            </div>
+
+            <!-- ИНПУТ -->
+            <div class="floating-input-wrapper">
+                <div class="floating-input-box">
+                    <div class="input-main-row">
+                        <textarea id="message-input" placeholder="Спросить Abdu AI..." rows="1"></textarea>
+                    </div>
+                    <div class="input-bottom-row">
+                        <div class="left-actions relative-container">
+                            <button class="icon-btn" id="attach-btn" title="Прикрепить файл"><i class="fa-solid fa-plus"></i></button>
+                            <button class="action-btn" id="tools-btn"><i class="fa-solid fa-sliders"></i> Инструменты</button>
+                            <div class="dropdown-menu bottom-dropdown" id="tools-dropdown">
+                                <button class="dropdown-item tool-option">Анализ кода</button>
+                                <button class="dropdown-item tool-option">Поиск в сети</button>
+                            </div>
+                        </div>
+                        <div class="right-actions relative-container">
+                            <div class="model-selector" id="models-btn">
+                                <span id="current-model-text">Gemini 1.5 Flash</span> <i class="fa-solid fa-chevron-down"></i>
+                            </div>
+                            <div class="dropdown-menu bottom-dropdown right-align" id="models-dropdown">
+                                <button class="dropdown-item model-option active">Gemini 1.5 Flash</button>
+                                <button class="dropdown-item model-option">Gemini 2.0 Flash</button>
+                                <button class="dropdown-item model-option">Gemini Advanced</button>
+                            </div>
+                            <button class="icon-btn send-btn" id="send-btn" title="Отправить"><i class="fa-solid fa-paper-plane"></i></button>
+                            <button class="icon-btn send-btn stop-btn" id="stop-btn" style="display: none;"><i class="fa-solid fa-square"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="disclaimer">Abdu AI может ошибаться. Проверяйте информацию.</div>
+            </div>
+        </main>
+    </div>
+
+    <!-- АДЕКВАТНЫЕ НАСТРОЙКИ -->
+    <div class="modal-overlay" id="settings-modal" style="display: none;">
+        <div class="modal-content settings-box">
+            <h3 style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                Настройки <button class="icon-btn" id="close-settings"><i class="fa-solid fa-xmark"></i></button>
+            </h3>
+            <div style="text-align: left; margin-bottom: 20px;">
+                <p style="color: var(--text-secondary); margin-bottom: 10px;">План подписки</p>
+                <button class="plan-btn upgrade" id="upgrade-btn">Улучшить до Pro</button>
+            </div>
+            <div style="text-align: left;">
+                <p style="color: var(--text-secondary); margin-bottom: 10px;">Данные</p>
+                <button class="danger-btn" id="clear-all-data-btn">Удалить всю историю чатов</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
